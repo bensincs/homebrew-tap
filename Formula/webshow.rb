@@ -1,13 +1,13 @@
 class Webshow < Formula
   desc "A minimal macOS app that opens a URL in a native webview window"
   homepage "https://github.com/bensincs/webshow"
-  version "0.2.0"
+  version "0.1.0"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/bensincs/webshow/releases/download/v0.2.0/webshow-v0.2.0-aarch64-apple-darwin.tar.gz"
-      sha256 "afac4263c63a64e31207a4c0acb3f62db55940db22977f0772fccffc80616171"
+      url "https://github.com/bensincs/webshow/releases/download/v0.1.0/webshow-v0.1.0-aarch64-apple-darwin.tar.gz"
+      sha256 "75e385ddf52706191cf2b7b33d64fc5ac9909926593fca191a228a5e9205c50e"
     end
   end
 
