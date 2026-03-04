@@ -11,4 +11,10 @@ cask "webshow" do
   depends_on arch: :arm64
 
   app "WebShow.app"
+
+  postflight do
+    system_command "/usr/bin/xattr",
+                   args: ["-d", "com.apple.quarantine", "#{appdir}/WebShow.app"],
+                   sudo: false
+  end
 end
