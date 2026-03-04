@@ -1,6 +1,6 @@
 cask "webshow" do
   version "0.3.0"
-  sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+  sha256 "4b08ac3e61820efa0574fe62a2bde2951fdf82bb0b807cc33dbb776d771285b4"
 
   url "https://github.com/bensincs/webshow/releases/download/v#{version}/webshow-v#{version}-aarch64-apple-darwin.tar.gz"
   name "WebShow"
