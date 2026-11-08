@@ -1,10 +1,10 @@
 class Dubalt < Formula
-  desc "Double-Option hold dictation with local speech and semantic Copilot cleanup"
+  desc "Double-Option dictation with local speech and semantic Copilot cleanup"
   homepage "https://github.com/bensincs/dubalt"
   url "ssh://git@github.com/bensincs/dubalt.git",
       using:    :git,
-      revision: "dacf815d35976bd52bdf6cd7ab8260e80320947c"
-  version "0.2.2"
+      revision: "83f302dcdb66e3734293d2f5825b4f96ba610627"
+  version "0.3.0-alpha.1"
   license "MIT"
 
   depends_on "cmake" => :build
@@ -47,65 +47,44 @@ class Dubalt < Formula
 
   def caveats
     <<~EOS
-      DubAlt builds from a pinned PRIVATE Git repository, not a release/bottle.
-      Before fetching, your normal GitHub SSH identity/agent must have access to
-      bensincs/dubalt. Homebrew Git downloads are non-interactive; the app's
-      other checkout's repo-local HTTPS credential helper is not inherited.
-      No token-bearing URL/header or copied auth state is needed. Check access:
+      Source-test candidate: native Mac build/runtime and M1 performance are
+      unverified. No binary/bottle or notarized release is available.
+
+      The source repository is PRIVATE. Your existing GitHub SSH identity/agent
+      must have access before Homebrew's non-interactive clone:
         git ls-remote ssh://git@github.com/bensincs/dubalt.git HEAD
+      Full selected Xcode is required; Homebrew supplies the other build tools.
+      Source builds download locked crates and pinned runtime archives and can
+      take substantial time and disk space.
 
-      The first source build downloads locked crates and the SDK's pinned public
-      native runtime archives. Allow substantial time, RAM and disk; no build
-      duration has been measured. Rust >= 1.99.1, full Xcode, Python 3.14 and
-      CMake are build-time prerequisites, not installed app helpers.
-
-      Brew installs only the executable. It never installs/launches the user app,
-      accepts model terms, downloads speech models, opens the mic, requests TCC,
-      logs into Copilot, calls AI or registers a startup service. Explicitly run:
+      Brew installs the executable only. Explicitly install/open the user app:
         dubalt install
         open "$HOME/Applications/DubAlt.app"
-      Then use the DubAlt menu for model-license acceptance/setup and explicit
-      microphone + Accessibility + Input Monitoring permissions. Tap either
-      Option once and release (<= 200 ms); press the SAME Option again within
-      350 ms and HOLD while speaking. Release the second press to finish.
-      Cancel/dismiss is Control-Option-Escape or the menu. This is NOT a toggle.
-      The non-activating overlay shows recording, processing and errors.
-      Copilot semantic cleanup is ON by default. Recording requires primed local
-      speech plus an authenticated, prepared cleanup session. Unavailable setup/
-      auth/session/rearm stays unavailable; RAW is usable only by explicit choice.
-      One final request per utterance; network/model latency is
-      nonzero. Auth/network/timeout/invalid output inserts NOTHING, never raw.
-      `dubalt config --copilot false` explicitly selects raw mode.
+      Upgrading? Quit DubAlt/legacy Flowdict first, then use:
+        dubalt install --replace
+      The previous valid DubAlt bundle is retained. Old apps/state are not
+      automatically deleted, merged, overwritten or chmodded.
 
-      Homebrew rename metadata maps the old flowdict formula name to dubalt;
-      the executable/app are now dubalt/DubAlt. Quit the legacy app first.
-      Existing own-app Flowdict model/settings/auth roots are reused in place
-      when the DubAlt root is absent, never merged/copied/deleted. Existing
-      explicit raw-mode settings are preserved. If both roots exist, startup
-      refuses to choose. Insecure ownership/permissions, symlinks and unsafe
-      config/auth/runtime directories are refused without chmod or state merging.
-      Nonempty COPILOT_CLI_PATH and ambient token routing are rejected before SDK
-      startup; use normal own-app device login, not an inherited runtime override.
-      New bundle identity requires new macOS TCC grants.
+      Prepare from the app menu: Download model / license (~483 MB),
+      Sign in / reconnect Copilot, and Permissions (microphone, Accessibility,
+      Input Monitoring). Normal Copilot entitlement/network access is required.
+      No CLI login or configuration is needed. Wait for Ready.
 
-      Version 0.2.2 is a hardened SOURCE TEST SNAPSHOT, not native production proof.
-      The original paired-Option/DA icon and About/version/notices are embedded.
-      Quit before `dubalt install --replace`; unrelated destinations and existing
-      backups are refused. Valid prior own-app bundles are retained on replacement.
+      Tap Option and release; press the SAME Option again and hold while speaking;
+      release to finish. Cancel with Control-Option-Escape or the menu.
+      Audio stays local; the transcript goes to Copilot for semantic cleanup.
+      One final result, no Enter or automatic Paste, and no raw fallback.
+      There is no RAW/offline mode, model picker or clipboard backup/restore.
+      Failed-insertion text can be copied manually or discarded in the app.
+      Retired nondefault settings need explicit acknowledgement each launch;
+      an old RAW choice never silently enables transcript uploads.
 
-      Experimental and native-unverified: packaging is not full tool readiness.
-      Declared Apple Silicon macOS 14+ minimum, embedded runtime startup/session/
-      shutdown, microphone/TCC, actual inference and M1 latency remain UNTESTED.
-      Insertion is AX-only into supported captured editable fields. Terminals
-      and secure/password fields are refused; incomplete AX support fails closed.
-      Clipboard recovery is manual and opt-in, not automatic Paste/Enter.
-      Browser/Electron/custom-field coverage is not guaranteed.
-
-      The explicit app installer uses ad-hoc signing, not Developer ID or
-      notarization. Never disable Gatekeeper or SIP. Inspect embedded dependency
-      notices with `dubalt notices`; runtime/model terms are separate from the
-      app's MIT license and complete license clearance remains a review gate.
-      No native binary, bottle or GitHub release has been published.
+      Terminals/secure/unsupported fields are refused; app coverage, speech
+      accuracy and latency still need Mac testing. Never disable macOS security
+      protections. Inspect licenses with `dubalt notices`; signing/notarization
+      and complete runtime/model/dependency clearance remain binary-release gates.
+      Brew install/test does not launch the app, download speech models, request
+      permissions, authenticate, open the mic or make a model call.
     EOS
   end
 
@@ -117,9 +96,12 @@ class Dubalt < Formula
     assert_equal "macos", report.fetch("os")
     assert_equal "aarch64", report.fetch("arch")
     assert_equal false, report.fetch("model_integrity")
-    assert_equal true, report.fetch("config").fetch("copilot")
-    assert_equal false, report.fetch("config").fetch("clipboard_fallback")
-    assert_equal "not checked; use copilot-smoke", report.fetch("copilot_auth")
+    assert_equal "semantic / SDK default model only", report.fetch("mode")
+    assert_equal false, report.fetch("settings_acknowledgement_required")
+    assert_nil report.fetch("legacy_settings").fetch("copilot")
+    assert_nil report.fetch("legacy_settings").fetch("clipboard_fallback")
+    assert_nil report.fetch("legacy_settings").fetch("copilot_model")
+    assert_equal "not checked; sign in from app", report.fetch("copilot_auth")
     refute_predicate testpath/"Library", :exist?
     assert_equal "off", report.fetch("history")
     refute_predicate testpath/"Applications/DubAlt.app", :exist?
