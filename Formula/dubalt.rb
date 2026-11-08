@@ -3,8 +3,8 @@ class Dubalt < Formula
   homepage "https://github.com/bensincs/dubalt"
   url "ssh://git@github.com/bensincs/dubalt.git",
       using:    :git,
-      revision: "83f302dcdb66e3734293d2f5825b4f96ba610627"
-  version "0.3.0-alpha.1"
+      revision: "09ec23faacea81d879655f3d615a1ea32c8d84eb"
+  version "0.3.0-alpha.2"
   license "MIT"
 
   depends_on "cmake" => :build
