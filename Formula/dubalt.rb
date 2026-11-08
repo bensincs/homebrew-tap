@@ -1,10 +1,10 @@
 class Dubalt < Formula
-  desc "Double-Option dictation with local speech and semantic Copilot cleanup"
+  desc "Menu or double-Option dictation with local speech and Copilot cleanup"
   homepage "https://github.com/bensincs/dubalt"
   url "ssh://git@github.com/bensincs/dubalt.git",
       using:    :git,
-      revision: "09ec23faacea81d879655f3d615a1ea32c8d84eb"
-  version "0.3.0-alpha.2"
+      revision: "62a5278121d027d8abdd1cbbb8841a89e9f1f93e"
+  version "0.3.0-alpha.3"
   license "MIT"
 
   depends_on "cmake" => :build
@@ -65,13 +65,18 @@ class Dubalt < Formula
       The previous valid DubAlt bundle is retained. Old apps/state are not
       automatically deleted, merged, overwritten or chmodded.
 
-      Prepare from the app menu: Download model / license (~483 MB),
-      Sign in / reconnect Copilot, and Permissions (microphone, Accessibility,
-      Input Monitoring). Normal Copilot entitlement/network access is required.
-      No CLI login or configuration is needed. Wait for Ready.
+      Prepare from the app menu: Download model / license (~483 MB) and
+      Sign in / reconnect Copilot. Verified model and authenticated sign-in
+      completion have separate check marks; neither alone means Ready.
+      Menu dictation needs microphone + Accessibility permissions. Input
+      Monitoring is separate and needed only for the Option shortcut.
+      Normal Copilot entitlement/network access is required; no CLI login.
 
-      Tap Option and release; press the SAME Option again and hold while speaking;
-      release to finish. Cancel with Control-Option-Escape or the menu.
+      Focus a supported field, open the menu and choose Start dictation, then
+      Stop and insert. Cancel remains separate. Menu pre-capture expires after
+      ten seconds; reopen from the field if Start is disabled. No refocusing.
+      Or tap Option and release, press the SAME Option again and hold while
+      speaking, then release to finish. Cancel with Control-Option-Escape/menu.
       Audio stays local; the transcript goes to Copilot for semantic cleanup.
       One final result, no Enter or automatic Paste, and no raw fallback.
       There is no RAW/offline mode, model picker or clipboard backup/restore.
